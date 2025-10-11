@@ -3,8 +3,8 @@ from typing import List, Optional
 
 class Food(BaseModel):
     name: str
+    description: Optional[str] = ""
     price: Optional[float] = None
-    description: Optional[str] = None
 
 class Category(BaseModel):
     name: str

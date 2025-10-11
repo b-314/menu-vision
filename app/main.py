@@ -1,33 +1,19 @@
-from fastapi import FastAPI, File, UploadFile
-from app.parser import MenuParser
-from app.models import Category
-from PIL import Image
-import io
+# app/main.py
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import List
+from app.parser import TextMenuParser
 
-app = FastAPI(
-    title="Menu Parsing API",
-    description="Upload a menu image and receive structured categories and foods",
-    version="1.0.0"
-)
+class MenuTextRequest(BaseModel):
+    text: str
 
-@app.get("/")
-def read_root():
-    return {"message": "Menu Parsing API is running!"}
+app = FastAPI(title="Menu Text Parsing API")
 
-@app.post("/upload_menu/", response_model=list[Category])
-async def upload_menu(file: UploadFile = File(...)):
-    """
-    Upload a menu image (JPEG/PNG) and receive structured categories and food items.
-    """
-    try:
-        # Read uploaded image
-        image_bytes = await file.read()
-        image = Image.open(io.BytesIO(image_bytes))
-
-        # Parse menu
-        parser = MenuParser(image)
-        categories = parser.parse()
-
-        return categories
-    except Exception as e:
-        return {"error": str(e)}
+@app.post("/parse_menu_text/")
+async def parse_menu_text(request: MenuTextRequest):
+    if not request.text.strip():
+        raise HTTPException(status_code=400, detail="Text is empty")
+    
+    parser = TextMenuParser(request.text)
+    parsed_lines = parser.parse_lines()
+    return {"parsed": parsed_lines}
