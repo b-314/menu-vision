@@ -29,9 +29,52 @@
 		58BE79292E9AC91200FA6B23 /* menuvisionUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = menuvisionUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		58BE79522E9B668600FA6B23 /* Exceptions for "menuvision" folder in "menuvisionTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"BudokanRounded-Bold.otf",
+				LoginView.swift,
+			);
+			target = 58BE791E2E9AC91200FA6B23 /* menuvisionTests */;
+		};
+		58BE79532E9B668600FA6B23 /* Exceptions for "menuvision" folder in "menuvisionUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"BudokanRounded-Bold.otf",
+				LoginView.swift,
+			);
+			target = 58BE79282E9AC91200FA6B23 /* menuvisionUITests */;
+		};
+		58BE79552E9B66CD00FA6B23 /* Exceptions for "menuvision" folder in "menuvision" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				.swift,
+				Info.plist,
+			);
+			target = 58BE79112E9AC91000FA6B23 /* menuvision */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		58BE795C2E9B727500FA6B23 /* Exceptions for "menuvision" folder in "Compile Sources" phase from "menuvision" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 58BE790E2E9AC91000FA6B23 /* Sources */;
+			membershipExceptions = (
+				.swift,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		58BE79142E9AC91000FA6B23 /* menuvision */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				58BE79552E9B66CD00FA6B23 /* Exceptions for "menuvision" folder in "menuvision" target */,
+				58BE795C2E9B727500FA6B23 /* Exceptions for "menuvision" folder in "Compile Sources" phase from "menuvision" target */,
+				58BE79522E9B668600FA6B23 /* Exceptions for "menuvision" folder in "menuvisionTests" target */,
+				58BE79532E9B668600FA6B23 /* Exceptions for "menuvision" folder in "menuvisionUITests" target */,
+			);
 			path = menuvision;
 			sourceTree = "<group>";
 		};
@@ -400,11 +443,15 @@
 				DEVELOPMENT_TEAM = C4P4SZAZG9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = menuvision/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "To scan text from restaurant menus.\n\nTo scan text from restaurant menus.\n\nExport to Sheets\nTo scan text from restaurant menus.\n\nExport to Sheets\nTo scan text from restaurant menus.\n\n";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -428,11 +475,15 @@
 				DEVELOPMENT_TEAM = C4P4SZAZG9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = menuvision/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "To scan text from restaurant menus.\n\nTo scan text from restaurant menus.\n\nExport to Sheets\nTo scan text from restaurant menus.\n\nExport to Sheets\nTo scan text from restaurant menus.\n\n";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

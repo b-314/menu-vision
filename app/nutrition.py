@@ -1,7 +1,9 @@
 import os
 import json
-import requests
+import aiohttp
+import asyncio
 from typing import Any, Dict, Optional
+from app.gemini import GeminiClient
 
 # =============== CONFIG ===============
 NUTRITIONIX_APP_ID = os.getenv("NUTRITIONIX_APP_ID")
@@ -10,7 +12,7 @@ NUTRITIONIX_URL = "https://trackapi.nutritionix.com/v2/natural/nutrients"
 
 # =============== NUTRITIONIX LOGIC ===============
 
-def get_nutritionix_info(food_name: str) -> Optional[Dict[str, Any]]:
+async def get_nutritionix_info(session, food_name: str) -> Optional[Dict[str, Any]]:
     if not NUTRITIONIX_APP_ID or not NUTRITIONIX_API_KEY:
         print("[Nutritionix] Missing credentials — skipping.")
         return None
@@ -20,32 +22,32 @@ def get_nutritionix_info(food_name: str) -> Optional[Dict[str, Any]]:
         "x-app-key": NUTRITIONIX_API_KEY,
         "Content-Type": "application/json",
     }
-
     body = {"query": food_name}
 
     try:
-        res = requests.post(NUTRITIONIX_URL, headers=headers, json=body)
-        if res.status_code != 200:
-            print(f"[Nutritionix] {food_name} → API returned {res.status_code}")
-            return None
+        async with session.post(NUTRITIONIX_URL, headers=headers, json=body) as res:
+            if res.status != 200:
+                print(f"[Nutritionix] {food_name} → API returned {res.status}")
+                return None
 
-        data = res.json()
-        if not data.get("foods"):
-            return None
+            data = await res.json()
+            if not data.get("foods"):
+                return None
 
-        f = data["foods"][0]
-        return {
-            "food_name": f.get("food_name"),
-            "serving_size": f"{f.get('serving_qty', '')} {f.get('serving_unit', '')}".strip(),
-            "calories": f.get("nf_calories"),
-            "protein_g": f.get("nf_protein"),
-            "carbs_g": f.get("nf_total_carbohydrate"),
-            "fat_g": f.get("nf_total_fat"),
-        }
+            f = data["foods"][0]
+            return {
+                "food_name": f.get("food_name"),
+                "serving_size": f"{f.get('serving_qty', '')} {f.get('serving_unit', '')}".strip(),
+                "calories": f.get("nf_calories"),
+                "protein_g": f.get("nf_protein"),
+                "carbs_g": f.get("nf_total_carbohydrate"),
+                "fat_g": f.get("nf_total_fat"),
+                "fiber_g": f.get("nf_dietary_fiber"),
+                "sugar_g": f.get("nf_sugars"),
+            }
     except Exception as e:
         print(f"[Nutritionix Error] {food_name}: {e}")
         return None
-
 
 # =============== GEMINI FALLBACK ===============
 
@@ -67,44 +69,45 @@ standard portion sizes and common restaurant servings.
 "calories": float,
 "protein_g": float,
 "carbs_g": float,
-"fat_g": float
+"fat_g": float, 
+"fiber_g": float,
+"sugar_g": float
 }}
 
 Estimate for: "{food_name}"
 Return **only the JSON object**.
 """
 
-def get_gemini_estimate(food_name: str) -> Optional[Dict[str, Any]]:
-    from app.gemini import GeminiClient
-    gemini_client = GeminiClient()
+async def get_gemini_estimate(food_name: str) -> Optional[Dict[str, Any]]:
     """
     Calls Gemini to generate estimated nutrition data if Nutritionix fails.
     """
+    gemini_client = GeminiClient()
     prompt = make_gemini_prompt(food_name)
-    response = gemini_client.call(prompt)
-
-    # Extract the JSON part from the Gemini response
-    json_start = response.find("{")
-    json_end = response.rfind("}")
-    if json_start == -1 or json_end == -1:
-        print(f"[Gemini Nutrition] No JSON found for {food_name}: {response}")
-        return None
-
-    json_str = response[json_start:json_end + 1]
     try:
-        return json.loads(json_str)
-    except json.JSONDecodeError:
-        print(f"[Gemini Nutrition] Invalid JSON for {food_name}: {response}")
-        return None
+        response = await gemini_client.call(prompt)
 
-def get_nutrition(food_name: str) -> Optional[Dict[str, Any]]:
+        # Extract the JSON part from the Gemini response
+        json_start = response.find("{")
+        json_end = response.rfind("}")
+        if json_start == -1 or json_end == -1:
+            print(f"[Gemini Nutrition] No JSON found for {food_name}: {response}")
+            return None
+
+        json_str = response[json_start:json_end + 1]
+        return json.loads(json_str)
+    except Exception as e:
+        print(f"[Gemini Nutrition Error] {food_name}: {e}")
+        return None
+        
+async def get_nutrition(session, food_name: str) -> Optional[Dict[str, Any]]:
     """
     Main entry point — tries Nutritionix first, falls back to Gemini.
     """
-    nutrition = get_nutritionix_info(food_name)
+    nutrition = await get_nutritionix_info(session, food_name)
     if nutrition:
         print(f"[Nutritionix] Found: {food_name}")
         return nutrition
 
     print(f"[Nutritionix] Not found, falling back to Gemini for: {food_name}")
-    return get_gemini_estimate(food_name)
+    return await get_gemini_estimate(food_name)

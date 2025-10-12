@@ -1,3 +1,11 @@
+//
+//  FoodBudgetManager.swift
+//  menuvision
+//
+//  Created by Emily Jon on 10/12/25.
+//
+
+
 import SwiftUI
 import Combine
 
@@ -28,7 +36,7 @@ struct FoodBudgetView: View {
             Color.appBackground.ignoresSafeArea()
 
             VStack {
-                Text("Food Budget")
+                Text("Food Budget Weekly")
                     .themedTitle()
                     .padding(.bottom, 20)
 
