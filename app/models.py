@@ -1,14 +1,20 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
-class Food(BaseModel):
+class NutritionInfo(BaseModel):
+    calories: Optional[float] = None
+    protein: Optional[float] = None
+    carbs: Optional[float] = None
+    fat: Optional[float] = None
+
+class FoodItem(BaseModel):
     name: str
-    description: Optional[str] = ""
-    price: Optional[float] = None
+    description: Optional[str] = None
+    nutrition: Optional[NutritionInfo] = None
 
 class Category(BaseModel):
-    name: str
-    items: List[Food] = []
+    category: str
+    items: List[FoodItem]
 
-    def add_food(self, food: Food):
-        self.items.append(food)
+class MenuTextRequest(BaseModel):
+    text: str

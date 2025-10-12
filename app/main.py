@@ -1,19 +1,20 @@
-# app/main.py
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import List
-from app.parser import TextMenuParser
+from app.parser import GeminiMenuParser
+
+app = FastAPI()
 
 class MenuTextRequest(BaseModel):
-    text: str
+    menu_text: str
 
-app = FastAPI(title="Menu Text Parsing API")
-
-@app.post("/parse_menu_text/")
-async def parse_menu_text(request: MenuTextRequest):
-    if not request.text.strip():
-        raise HTTPException(status_code=400, detail="Text is empty")
-    
-    parser = TextMenuParser(request.text)
-    parsed_lines = parser.parse_lines()
-    return {"parsed": parsed_lines}
+@app.post("/process_menu_text/")
+async def process_menu_text(request: MenuTextRequest):
+    try:
+        parser = GeminiMenuParser(request.menu_text)
+        structured_menu = parser.parse()  # returns list of Category objects
+        # For testing, return as dicts instead of models to make JSON readable
+        return [cat.dict() for cat in structured_menu]
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        return {"error": str(e)}
