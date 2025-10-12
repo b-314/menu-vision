@@ -86,8 +86,19 @@ Ignore unrelated text. Do not write explanations. Return valid JSON **only**.
                 for item in cat.get("items", []):
                     item_name = item.get("name") or "Unnamed Item"
                     item_desc = item.get("description")
-                    item_price = item.get("price")
-                    items_list.append(FoodItem(name=item_name, description=item_desc, price=item_price))
+                    item_price_raw = item.get("price")
+                    item_price = None
+                    if item_price_raw:
+                        # Extract number from strings like "$5.99" or "USD 8"
+                        match = re.search(r"\d+(?:\.\d{1,2})?", str(item_price_raw))
+                        if match:
+                            item_price = float(match.group())
+
+                    items_list.append(FoodItem(
+                        name=item_name,
+                        description=item_desc,
+                        price=item_price
+                    ))
                 if items_list:
                     final_categories.append(Category(category=cat_name, items=items_list))
             if not final_categories:
@@ -120,7 +131,12 @@ Ignore unrelated text. Do not write explanations. Return valid JSON **only**.
                     name, description = map(str.strip, name_desc.split("-", 1))
                 else:
                     name, description = name_desc, None
+                try:
+                    price_val = float(price.replace("$", ""))
+                except ValueError:
+                    price_val = None
+
                 categories[0].items.append(
-                    FoodItem(name=name or "Unnamed Item", description=description, price=price)
+                    FoodItem(name=name or "Unnamed Item", description=description, price=price_val)
                 )
         return categories

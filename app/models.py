@@ -10,6 +10,7 @@ class NutritionInfo(BaseModel):
 class FoodItem(BaseModel):
     name: str
     description: Optional[str] = None
+    price: Optional[float] = None
     nutrition: Optional[NutritionInfo] = None
 
 class Category(BaseModel):
